@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="allDisabled">
+        <item>간장애</item>
+        <item>국가유공</item>
+        <item>뇌병변장애</item>
+        <item>뇌전증장애</item>
+        <item>시각장애</item>
+        <item>신장장애</item>
+        <item>심장장애</item>
+        <item>안면장애</item>
+        <item>언어장애</item>
+        <item>자폐성장애</item>
+        <item>장루요루장애</item>
+        <item>정신장애</item>
+        <item>지적장애</item>
+        <item>지체장애</item>
+        <item>청각장애</item>
+        <item>특수교육법상 장애인</item>
+        <item>호흡기장애</item>
+    </string-array>
+
+</resources>
