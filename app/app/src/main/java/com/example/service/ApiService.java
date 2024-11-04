@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.model.Disabled;
 import com.example.model.Location;
 import com.example.model.MemberDTO;
 
@@ -10,7 +9,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 public interface ApiService {
     @POST("/join")
@@ -25,6 +23,7 @@ public interface ApiService {
     @GET("/member")
     Call<MemberDTO> getMemberDetails();
 
-
-
+    // Updated method to handle search queries
+    @POST("/search")
+    Call<Location> postSearchQuery(@Body String query);
 }
