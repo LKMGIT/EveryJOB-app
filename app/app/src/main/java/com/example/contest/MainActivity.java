@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
+// 로그인 회원가입 나오는 부분
 public class MainActivity extends AppCompatActivity {
 
 
