@@ -4,21 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.kakaomaptest.MapActivity;
-import com.example.model.MemberDTO;
+import com.example.model.MemberRequestDTO;
+import com.example.model.MemberResponseDTO;
 import com.example.retrofit.RetrofitClient;
 import com.example.service.ApiService;
 
-import me.relex.circleindicator.CircleIndicator3;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,16 +39,16 @@ public class ProfileActivity extends AppCompatActivity {
         profile_age = findViewById(R.id.profile_age);
 
         // Retrofit 인스턴스 생성
-        String baseUrl = "http://your-server-url.com/"; // 서버의 URL을 입력합니다.
+        String baseUrl = "https://4fc3-220-69-208-119.ngrok-free.app"; // 서버의 URL을 입력합니다.
         Retrofit retrofit = RetrofitClient.getClient(baseUrl);
 
         // ApiService 인터페이스 구현
         ApiService apiService = retrofit.create(ApiService.class);
-        apiService.getMemberDetails().enqueue(new Callback<MemberDTO>() {
+        apiService.getMemberDetails().enqueue(new Callback<MemberResponseDTO>() {
             @Override
-            public void onResponse(Call<MemberDTO> call, Response<MemberDTO> response) {
+            public void onResponse(Call<MemberResponseDTO> call, Response<MemberResponseDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    MemberDTO member = response.body();
+                    MemberResponseDTO member = response.body();
 
                     // 데이터를 뷰에 설정
                     profile_name.setText(member.getName());
@@ -63,13 +58,14 @@ public class ProfileActivity extends AppCompatActivity {
                     profile_address.setText(member.getAddress());
                     profile_intro.setText(member.getIntro());
                     profile_age.setText(String.valueOf(member.getAge()));
+
                 } else {
                     Log.e("MainActivity", "Error: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<MemberDTO> call, Throwable t) {
+            public void onFailure(Call<MemberResponseDTO> call, Throwable t) {
                 Log.e("MainActivity", "Failure: " + t.getMessage());
             }
         });

@@ -17,7 +17,9 @@
         android:theme="@style/Theme.Contest"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".CompanyActivity"
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
             android:exported="true">

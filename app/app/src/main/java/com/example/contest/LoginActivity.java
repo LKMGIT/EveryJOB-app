@@ -1,7 +1,6 @@
 package com.example.contest;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,8 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kakaomaptest.MapActivity;
-import com.example.model.MemberDTO;
+import com.example.model.MemberLoginRequestDTO;
 import com.example.retrofit.RetrofitClient;
 import com.example.service.ApiService;
 
@@ -40,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
 
         // Retrofit 클라이언트를 생성하고 ApiService 인터페이스 구현체 초기화
-        Retrofit retrofit = RetrofitClient.getClient("https://8308-220-69-208-119.ngrok-free.app");
+        Retrofit retrofit = RetrofitClient.getClient("https://4fc3-220-69-208-119.ngrok-free.app");
         apiService = retrofit.create(ApiService.class);
 
         // 로그인 버튼 클릭 이벤트 설정
@@ -57,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String id, String pw){
-        MemberDTO member = new MemberDTO(id, pw);  // 사용자 ID와 비밀번호를 가진 MemberDTO 객체 생성
+        MemberLoginRequestDTO member = new MemberLoginRequestDTO(id, pw);  // 사용자 ID와 비밀번호를 가진 MemberDTO 객체 생성
 
         // ApiService의 loginUser 메서드를 호출하여 로그인 요청을 보냄
         apiService.loginUser(member).enqueue(new Callback<Void>() {

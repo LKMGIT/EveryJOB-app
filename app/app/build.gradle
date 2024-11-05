@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.1.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'me.relex:circleindicator:2.1.6'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity

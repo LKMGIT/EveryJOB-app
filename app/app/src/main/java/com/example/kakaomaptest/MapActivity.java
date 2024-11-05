@@ -6,7 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import com.example.model.Location;
+import com.example.model.LocationDetailResponseDTO;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.contest.R;
+import com.example.model.LocationSearchResponseDTO;
 import com.example.retrofit.RetrofitClient;
 import com.example.service.ApiService;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,7 +33,6 @@ import com.kakao.vectormap.KakaoMap;
 import com.kakao.vectormap.KakaoMapReadyCallback;
 import com.kakao.vectormap.LatLng;
 import com.kakao.vectormap.MapView;
-import com.kakao.vectormap.camera.CameraAnimation;
 import com.kakao.vectormap.camera.CameraUpdate;
 import com.kakao.vectormap.camera.CameraUpdateFactory;
 import com.kakao.vectormap.label.Label;
@@ -71,7 +71,7 @@ public class MapActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE); // 로딩 표시 제거
             LabelLayer layer = kakaoMap.getLabelManager().getLayer();
             centerLabel = layer.addLabel(LabelOptions.from("centerLabel", startPosition)
-                    .setStyles(LabelStyle.from(R.drawable.red_dot_marker).setAnchorPoint(0.5f, 0.5f))
+                    .setStyles(LabelStyle.from(R.drawable.map_icon_1).setAnchorPoint(1f, 1f))
                     .setRank(1));
             fetchLocationData(); // 위치 데이터 가져오기
         }
@@ -104,7 +104,7 @@ public class MapActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Retrofit을 사용하여 ApiService 생성
-        Retrofit retrofit = RetrofitClient.getClient("https://8308-220-69-208-119.ngrok-free.app"); // 실제 서버 URL로 변경
+        Retrofit retrofit = RetrofitClient.getClient("https://4fc3-220-69-208-119.ngrok-free.app"); // 실제 서버 URL로 변경
         apiService = retrofit.create(ApiService.class);
 
         // 위치 권한 확인 및 요청
@@ -153,14 +153,14 @@ public class MapActivity extends AppCompatActivity {
 
     // 서버에서 위치 데이터를 가져오는 메서드
     private void fetchLocationData() {
-        apiService.getLocations().enqueue(new Callback<List<Location>>() {
+        apiService.getLocations().enqueue(new Callback<List<LocationDetailResponseDTO>>() {
             @Override
-            public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
+            public void onResponse(Call<List<LocationDetailResponseDTO>> call, Response<List<LocationDetailResponseDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Location> locations = response.body();
+                    List<LocationDetailResponseDTO> locations = response.body();
 
                     // 위치 데이터를 이용해 마커 추가
-                    for (Location location : locations) {
+                    for (LocationDetailResponseDTO location : locations) {
                         addMarker(location.getLatitude(), location.getLongitude());
                     }
                 } else {
@@ -169,7 +169,7 @@ public class MapActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Location>> call, Throwable t) {
+            public void onFailure(Call<List<LocationDetailResponseDTO>> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -177,13 +177,15 @@ public class MapActivity extends AppCompatActivity {
 
     // 검색어를 서버에 전송하고 응답으로 위치를 받아오는 메서드
     private void sendSearchQuery(String query) {
-        apiService.postSearchQuery(query).enqueue(new Callback<Location>() {
+        apiService.postSearchQuery(query).enqueue(new Callback<LocationSearchResponseDTO>() {
             @Override
-            public void onResponse(Call<Location> call, Response<Location> response) {
+            public void onResponse(Call<LocationSearchResponseDTO> call, Response<LocationSearchResponseDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Location location = response.body();
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
+                    LocationSearchResponseDTO location = response.body();
+                    double latitude = location.getLatitude().doubleValue();
+                    double longitude = location.getLongitude().doubleValue();
+
+                    // LatLng 객체를 생성하는 올바른 방법
                     LatLng searchPosition = LatLng.from(latitude, longitude);
 
                     if (kakaoMap != null) {
@@ -201,12 +203,13 @@ public class MapActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Location> call, Throwable t) {
+            public void onFailure(Call<LocationSearchResponseDTO> call, Throwable t) {
                 t.printStackTrace();
                 Toast.makeText(MapActivity.this, "서버와의 연결에 실패했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     // 지도에 마커 추가
     private void addMarker(double latitude, double longitude) {
@@ -214,7 +217,7 @@ public class MapActivity extends AppCompatActivity {
         if (kakaoMap != null) {
             LabelLayer layer = kakaoMap.getLabelManager().getLayer();
             layer.addLabel(LabelOptions.from("", position)
-                    .setStyles(LabelStyle.from(R.drawable.red_dot_marker).setAnchorPoint(0.5f, 0.5f))
+                    .setStyles(LabelStyle.from(R.drawable.map_icon_1).setAnchorPoint(1f, 1f))
                     .setRank(1));
         }
     }

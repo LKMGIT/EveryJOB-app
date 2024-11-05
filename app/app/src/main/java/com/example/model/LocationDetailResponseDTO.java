@@ -1,9 +1,8 @@
 package com.example.model;
 
-public class Location {
+public class LocationDetailResponseDTO {
 
-    double latitude;
-    double longitude;
+    Long id;
     String address;
     String name;
     String recruitment_period;
@@ -19,17 +18,8 @@ public class Location {
     String responsible_agency;
     String call_info;
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public String getAddress() {
-        return address;
-    }
+    public Long getId(){return id;}
+    public String getAddress() {return address;}
 
     public String getName() {
         return name;

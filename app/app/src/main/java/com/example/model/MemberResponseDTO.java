@@ -1,10 +1,7 @@
 package com.example.model;
 
-import java.math.BigInteger;
-
-public class MemberDTO {
+public class MemberResponseDTO {
     private String accountId;
-    private String password;
     private String name;
     private String gender;
     private int age;
@@ -15,15 +12,9 @@ public class MemberDTO {
     private String disabled_type;
     private String is_severe;
 
-    public MemberDTO(String accountId, String memberPassword) {
+    public MemberResponseDTO(String accountId,  String name, String gender, int age,
+                            String email, String call_info, String address, String intro, String disabled_type, String is_severe) {
         this.accountId = accountId;
-        this.password = memberPassword;
-    }
-
-    public MemberDTO(String accountId, String memberPassword, String name, String gender, int age,
-                  String email, String call_info, String address, String intro, String disabled_type, String is_severe) {
-        this.accountId = accountId;
-        this.password = memberPassword;
         this.name = name;
         this.gender = gender;
         this.age = age;
@@ -38,10 +29,6 @@ public class MemberDTO {
 
     public String getId() {
         return accountId;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getName() {
@@ -72,8 +59,7 @@ public class MemberDTO {
         return intro;
     }
 
-    public String getDisabled_id() {
-        return disabled_type;
-    }
+    public String getDisabled_id() {return disabled_type;}
 
+    public String getIs_severe(){return is_severe;}
 }

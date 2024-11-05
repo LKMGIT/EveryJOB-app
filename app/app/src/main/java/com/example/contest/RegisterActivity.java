@@ -17,7 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.model.MemberDTO;
+import com.example.model.MemberRequestDTO;
 import com.example.retrofit.RetrofitClient;
 import com.example.service.ApiService;
 
@@ -27,7 +27,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity {
-    public MemberDTO member;
+    public MemberRequestDTO member;
 
     String[] items = {
             "간장애",
@@ -76,20 +76,16 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btn_register);
         spType = findViewById(R.id.et_register_type);
 
-        Retrofit retrofit = RetrofitClient.getClient("https://8308-220-69-208-119.ngrok-free.app");
-        //Retrofit retrofit = RetrofitClient.getClient("http://10.0.2.2:8080");
+        Retrofit retrofit = RetrofitClient.getClient("https://4fc3-220-69-208-119.ngrok-free.app");
         apiService = retrofit.create(ApiService.class);
 
         // 장애 정보 폼 비활성화
         disabled_form.setVisibility(View.GONE);
 
-        // 장애 여부 선택 리스트 어댑터
-        Spinner disabledSpinner = (Spinner)findViewById(R.id.et_register_type);
-
-        ArrayAdapter<String> disabledAdapter = new ArrayAdapter<String>(this,
+        // 장애 여부 선택 리스트 어댑터 설정
+        Spinner disabledSpinner = findViewById(R.id.et_register_type);
+        ArrayAdapter<String> disabledAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
-
-        disabledAdapter.setDropDownViewResource(R.layout.re_spinner_item);
         disabledAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         disabledSpinner.setAdapter(disabledAdapter);
 
@@ -97,79 +93,71 @@ public class RegisterActivity extends AppCompatActivity {
         cbDis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     disabled_form.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     disabled_form.setVisibility(View.GONE);
                 }
             }
         });
-        
-        // 장애 여부 선택 리스트 리스너
-//        disabledSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
-        
+
         // 회원가입 버튼 리스너
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                long isDis;
-                String gender, Severe;
+                try {
+                    String gender, severe;
+                    RadioButton radioButton = findViewById(rgGender.getCheckedRadioButtonId());
+                    gender = radioButton.getText().toString();
 
-                RadioButton radioButton = findViewById(rgGender.getCheckedRadioButtonId());
-                gender = radioButton.getText().toString();
+                    if (cbDis.isChecked()) {
+                        RadioButton radioButton2 = findViewById(rgSevere.getCheckedRadioButtonId());
+                        severe = radioButton2.getText().toString();
 
-                if(cbDis.isChecked()) {
-                    RadioButton radioButton2 = findViewById(rgSevere.getCheckedRadioButtonId());
-                    Severe = radioButton2.getText().toString();
+                        member = new MemberRequestDTO(
+                                etId.getText().toString().trim(),
+                                etPw.getText().toString().trim(),
+                                etName.getText().toString().trim(),
+                                gender,
+                                Integer.parseInt(etAge.getText().toString().trim()),
+                                etEmail.getText().toString().trim(),
+                                etCall.getText().toString().trim(),
+                                etAddress.getText().toString().trim(),
+                                etIntro.getText().toString().trim(),
+                                spType.getSelectedItem().toString(),
+                                severe);
+                    } else {
+                        member = new MemberRequestDTO(
+                                etId.getText().toString().trim(),
+                                etPw.getText().toString().trim(),
+                                etName.getText().toString().trim(),
+                                gender,
+                                Integer.parseInt(etAge.getText().toString().trim()),
+                                etEmail.getText().toString().trim(),
+                                etCall.getText().toString().trim(),
+                                etAddress.getText().toString().trim(),
+                                etIntro.getText().toString().trim(),
+                                null,
+                                null);
+                    }
 
-                    member = new MemberDTO(
-                        etId.getText().toString(),
-                        etPw.getText().toString(),
-                        etName.getText().toString(),
-                        gender,
-                        Integer.parseInt(etAge.getText().toString()),
-                        etEmail.getText().toString(),
-                        etCall.getText().toString(),
-                        etAddress.getText().toString(),
-                        //getTextAsLines(etIntro),
-                        etIntro.getText().toString(),
-                        spType.getSelectedItem().toString(),
-                        Severe);
+                    registerUser(member);
+                } catch (NumberFormatException e) {
+                    Log.e("RegisterActivity", "Invalid age format: " + e.getMessage(), e);
+                    Toast.makeText(RegisterActivity.this, "올바른 나이 형식을 입력하세요.", Toast.LENGTH_SHORT).show();
+                } catch (NullPointerException e) {
+                    Log.e("RegisterActivity", "Required fields are missing: " + e.getMessage(), e);
+                    Toast.makeText(RegisterActivity.this, "모든 필수 입력값을 확인하세요.", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e("RegisterActivity", "회원가입 데이터 생성 오류: " + e.getMessage(), e);
+                    Toast.makeText(RegisterActivity.this, "회원가입 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    member = new MemberDTO(
-                            etId.getText().toString(),
-                            etPw.getText().toString(),
-                            etName.getText().toString(),
-                            gender,
-                            Integer.parseInt(etAge.getText().toString()),
-                            etEmail.getText().toString(),
-                            etCall.getText().toString(),
-                            etAddress.getText().toString(),
-                            //getTextAsLines(etIntro),
-                            etIntro.getText().toString(),
-                            null,
-                            null);
-                }
-
-                registerUser(member);
             }
         });
     }
 
     // 회원가입 처리 함수
-    private void registerUser(MemberDTO member) {
+    private void registerUser(MemberRequestDTO member) {
         apiService.registerUser(member).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -180,9 +168,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                }
-                else {
-                    String errorMessage = "회원가입 실패: " + response.message();
+                } else {
+                    String errorMessage = "회원가입 실패: " + response.code() + " - " + response.message();
                     Log.e("RegisterActivity", errorMessage);
                     Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }
@@ -195,10 +182,5 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private String[] getTextAsLines(EditText editText) {
-        String text = editText.getText().toString();
-        return text.split("\\r?\\n");
     }
 }
