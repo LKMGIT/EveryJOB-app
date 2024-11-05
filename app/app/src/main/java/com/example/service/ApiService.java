@@ -21,8 +21,9 @@ public interface ApiService {
     @POST("/member/login")
     Call<Void> loginUser(@Body MemberLoginRequestDTO member);
 
-    @GET("/locations")
-    Call<List<LocationDetailResponseDTO>> getLocations();
+    @GET("/location/detail/{id}")
+    Call<LocationDetailResponseDTO> getLocations(@Path("id") Long id);
+
 
     @GET("/member/detail")
     Call<MemberResponseDTO> getMemberDetails();

@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
 
         // Retrofit 클라이언트를 생성하고 ApiService 인터페이스 구현체 초기화
-        Retrofit retrofit = RetrofitClient.getClient("https://4fc3-220-69-208-119.ngrok-free.app");
+        Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(ApiService.class);
 
         // 로그인 버튼 클릭 이벤트 설정

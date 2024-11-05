@@ -39,8 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
         profile_age = findViewById(R.id.profile_age);
 
         // Retrofit 인스턴스 생성
-        String baseUrl = "https://4fc3-220-69-208-119.ngrok-free.app"; // 서버의 URL을 입력합니다.
-        Retrofit retrofit = RetrofitClient.getClient(baseUrl);
+
+        Retrofit retrofit = RetrofitClient.getClient();
 
         // ApiService 인터페이스 구현
         ApiService apiService = retrofit.create(ApiService.class);

@@ -7,8 +7,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static Retrofit retrofit = null;
+    private static final String baseUrl = "http://220.69.208.119:9000";
 
-    public static Retrofit getClient(String baseUrl) {
+    public static Retrofit getClient() {
         if (retrofit == null) {
             // HttpLoggingInterceptor 설정
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();

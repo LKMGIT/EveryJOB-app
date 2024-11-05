@@ -140,19 +140,19 @@
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintTop_toBottomOf="@id/profileTextView_company_req"
                     />
+
                 <TextView
                     android:id="@+id/company_pay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:text="시급 | 9,860원"
+                    android:layout_marginLeft="116dp"
+                    android:text="9,860원"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintLeft_toRightOf="@+id/company_req_pay"
-                    app:layout_constraintTop_toTopOf="@+id/company_req_pay"
-                    />
+                    app:layout_constraintTop_toTopOf="@+id/company_req_pay" />
+
                 <TextView
                     android:id="@+id/company_req_job"
                     android:layout_width="wrap_content"
@@ -338,6 +338,20 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/company_maj" />
+
+                <TextView
+                    android:id="@+id/salary_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="53dp"
+                    android:text="시급"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/company_pay"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/company_req_pay"
+                    app:layout_constraintTop_toTopOf="@+id/company_req_pay" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

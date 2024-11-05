@@ -76,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btn_register);
         spType = findViewById(R.id.et_register_type);
 
-        Retrofit retrofit = RetrofitClient.getClient("https://4fc3-220-69-208-119.ngrok-free.app");
+        Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(ApiService.class);
 
         // 장애 정보 폼 비활성화

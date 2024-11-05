@@ -6,7 +6,11 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+
+import com.example.contest.CompanyActivity;
 import com.example.model.LocationDetailResponseDTO;
+
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -33,6 +37,7 @@ import com.kakao.vectormap.KakaoMap;
 import com.kakao.vectormap.KakaoMapReadyCallback;
 import com.kakao.vectormap.LatLng;
 import com.kakao.vectormap.MapView;
+import com.kakao.vectormap.Poi;
 import com.kakao.vectormap.camera.CameraUpdate;
 import com.kakao.vectormap.camera.CameraUpdateFactory;
 import com.kakao.vectormap.label.Label;
@@ -69,11 +74,16 @@ public class MapActivity extends AppCompatActivity {
         public void onMapReady(@NonNull KakaoMap map) {
             kakaoMap = map; // KakaoMap 인스턴스 초기화
             progressBar.setVisibility(View.GONE); // 로딩 표시 제거
+
+            // startPosition이 null이 아닌 경우 현재 위치에 마커 추가
+            if (startPosition != null) {
+                addMarker(startPosition.getLatitude(), startPosition.getLongitude());
+            }
+
             LabelLayer layer = kakaoMap.getLabelManager().getLayer();
             centerLabel = layer.addLabel(LabelOptions.from("centerLabel", startPosition)
                     .setStyles(LabelStyle.from(R.drawable.map_icon_1).setAnchorPoint(1f, 1f))
                     .setRank(1));
-            fetchLocationData(); // 위치 데이터 가져오기
         }
 
         @NonNull
@@ -104,7 +114,7 @@ public class MapActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Retrofit을 사용하여 ApiService 생성
-        Retrofit retrofit = RetrofitClient.getClient("https://4fc3-220-69-208-119.ngrok-free.app"); // 실제 서버 URL로 변경
+        Retrofit retrofit = RetrofitClient.getClient(); // 실제 서버 URL로 변경
         apiService = retrofit.create(ApiService.class);
 
         // 위치 권한 확인 및 요청
@@ -142,40 +152,27 @@ public class MapActivity extends AppCompatActivity {
     // 사용자의 현재 위치 가져오기
     @SuppressLint("MissingPermission")
     private void getStartLocation() {
+        progressBar.setVisibility(View.VISIBLE); // 로딩 표시 시작
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener(this, location -> {
                     if (location != null) {
                         startPosition = LatLng.from(location.getLatitude(), location.getLongitude());
                         mapView.start(readyCallback); // 지도 시작
+
+                        // 현재 위치에 마커 추가
+                        addMarker(location.getLatitude(), location.getLongitude());
+                    } else {
+                        Toast.makeText(MapActivity.this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
                     }
+                    progressBar.setVisibility(View.GONE); // 로딩 표시 제거
+                })
+                .addOnFailureListener(this, e -> {
+                    progressBar.setVisibility(View.GONE); // 실패 시 로딩 표시 제거
+                    Toast.makeText(MapActivity.this, "위치를 가져오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    // 서버에서 위치 데이터를 가져오는 메서드
-    private void fetchLocationData() {
-        apiService.getLocations().enqueue(new Callback<List<LocationDetailResponseDTO>>() {
-            @Override
-            public void onResponse(Call<List<LocationDetailResponseDTO>> call, Response<List<LocationDetailResponseDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<LocationDetailResponseDTO> locations = response.body();
 
-                    // 위치 데이터를 이용해 마커 추가
-                    for (LocationDetailResponseDTO location : locations) {
-                        addMarker(location.getLatitude(), location.getLongitude());
-                    }
-                } else {
-                    System.err.println("응답이 성공적이지 않습니다: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<LocationDetailResponseDTO>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-    // 검색어를 서버에 전송하고 응답으로 위치를 받아오는 메서드
     private void sendSearchQuery(String query) {
         apiService.postSearchQuery(query).enqueue(new Callback<LocationSearchResponseDTO>() {
             @Override
@@ -184,8 +181,9 @@ public class MapActivity extends AppCompatActivity {
                     LocationSearchResponseDTO location = response.body();
                     double latitude = location.getLatitude().doubleValue();
                     double longitude = location.getLongitude().doubleValue();
+                    Long id = location.getId();
 
-                    // LatLng 객체를 생성하는 올바른 방법
+                    // LatLng 객체를 생성
                     LatLng searchPosition = LatLng.from(latitude, longitude);
 
                     if (kakaoMap != null) {
@@ -194,7 +192,27 @@ public class MapActivity extends AppCompatActivity {
                         kakaoMap.moveCamera(cameraUpdate);
 
                         // 마커를 검색된 위치에 추가
-                        addMarker(latitude, longitude);
+                        LabelLayer layer = kakaoMap.getLabelManager().getLayer();
+                        LabelOptions labelOptions = LabelOptions.from("", searchPosition)
+                                .setStyles(LabelStyle.from(R.drawable.map_icon_1).setAnchorPoint(1f, 1f))
+                                .setRank(1)
+                                .setTag(id); // id를 태그로 설정
+                        layer.addLabel(labelOptions); // 라벨을 레이어에 추가
+
+                        // 지도 클릭 리스너 설정
+                        kakaoMap.setOnMapClickListener(new KakaoMap.OnMapClickListener() {
+                            @Override
+                            public void onMapClicked(KakaoMap map, LatLng latLng, PointF point, Poi poi) {
+                                // 클릭한 위치와 라벨 위치 사이의 거리 계산
+                                double distance = calculateDistance(latLng, searchPosition);
+                                if (distance < 20) { // 거리가 50미터 이내인 경우 클릭으로 간주
+                                    // 클릭 이벤트 처리
+                                    Intent intent = new Intent(MapActivity.this, CompanyActivity.class);
+                                    intent.putExtra("id", id); // id 값을 전달
+                                    startActivity(intent); // CompanyActivity 시작
+                                }
+                            }
+                        });
                     }
                     Toast.makeText(MapActivity.this, "검색 위치가 성공적으로 표시되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -209,6 +227,8 @@ public class MapActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 
     // 지도에 마커 추가
@@ -233,6 +253,18 @@ public class MapActivity extends AppCompatActivity {
                 showPermissionDeniedDialog(); // 권한이 거부된 경우 다이얼로그 표시
             }
         }
+    }
+
+    // 두 위치 사이의 거리를 계산하는 메서드 (단위: 미터)
+    private double calculateDistance(LatLng point1, LatLng point2) {
+        double earthRadius = 6371000; // 지구 반지름 (미터)
+        double dLat = Math.toRadians(point2.getLatitude() - point1.getLatitude());
+        double dLng = Math.toRadians(point2.getLongitude() - point1.getLongitude());
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(point1.getLatitude())) * Math.cos(Math.toRadians(point2.getLatitude())) *
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadius * c;
     }
 
     // 위치 권한이 거부된 경우 다이얼로그 표시
