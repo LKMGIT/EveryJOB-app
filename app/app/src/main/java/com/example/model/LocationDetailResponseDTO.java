@@ -9,7 +9,7 @@ public class LocationDetailResponseDTO {
     String job_category;
     String employment_type;
     String salary_type;
-    Integer salary;
+    String salary;
     String entry_type;
     String required_experience;
     String required_education;
@@ -41,7 +41,7 @@ public class LocationDetailResponseDTO {
         return salary_type;
     }
 
-    public Integer getSalary() {
+    public String getSalary() {
         return salary;
     }
 

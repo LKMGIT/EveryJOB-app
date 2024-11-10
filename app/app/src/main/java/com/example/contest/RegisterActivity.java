@@ -106,13 +106,13 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    String gender, severe;
+                    String gender, severe = null;
                     RadioButton radioButton = findViewById(rgGender.getCheckedRadioButtonId());
                     gender = radioButton.getText().toString();
 
                     if (cbDis.isChecked()) {
                         RadioButton radioButton2 = findViewById(rgSevere.getCheckedRadioButtonId());
-                        severe = radioButton2.getText().toString();
+                        severe = radioButton2.getText().toString(); // 타이핑 오류 수정
 
                         member = new MemberRequestDTO(
                                 etId.getText().toString().trim(),
@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 etAddress.getText().toString().trim(),
                                 etIntro.getText().toString().trim(),
                                 spType.getSelectedItem().toString(),
-                                severe);
+                                severe.equals("Yes")); // boolean 값으로 설정
                     } else {
                         member = new MemberRequestDTO(
                                 etId.getText().toString().trim(),
@@ -137,8 +137,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 etCall.getText().toString().trim(),
                                 etAddress.getText().toString().trim(),
                                 etIntro.getText().toString().trim(),
-                                null,
-                                null);
+                                null, // disabled_type에 null 전달
+                                false); // is_severe에 false 전달
                     }
 
                     registerUser(member);

@@ -5,6 +5,7 @@ import com.example.model.LocationSearchResponseDTO;
 import com.example.model.MemberLoginRequestDTO;
 import com.example.model.MemberRequestDTO;
 import com.example.model.MemberResponseDTO;
+import com.example.model.RealtimeJobResponseDTO;
 
 import java.util.List;
 
@@ -24,11 +25,13 @@ public interface ApiService {
     @GET("/location/detail/{id}")
     Call<LocationDetailResponseDTO> getLocations(@Path("id") Long id);
 
-
     @GET("/member/detail")
     Call<MemberResponseDTO> getMemberDetails();
 
     // Updated method to handle search queries
     @GET("/location/{name}")
     Call<LocationSearchResponseDTO> postSearchQuery(@Path("name") String query);
+
+    @GET("/mainpage")
+    Call<List<RealtimeJobResponseDTO>> getMainPageData();
 }

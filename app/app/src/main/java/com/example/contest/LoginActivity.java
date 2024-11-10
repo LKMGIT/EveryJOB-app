@@ -62,11 +62,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 ///////// 나중에 빼기 ////////////
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class); // 일단 넘어가기로 함
-                startActivity(intent);
-                finish(); // 여ㅣ까지ㅂㅈ
+
                 if (response.isSuccessful()) {  // 로그인 성공 시
                     Log.d("LoginActivity", "로그인 성공");
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class); // 일단 넘어가기로 함
+                    startActivity(intent);
+                    finish(); // 여ㅣ까지ㅂㅈ
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
                 } else {  // 로그인 실패 시

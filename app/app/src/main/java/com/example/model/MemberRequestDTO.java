@@ -10,8 +10,8 @@ public class MemberRequestDTO {
     private String call_info;
     private String address;
     private String intro;
-    //private String disabled_type;
-    private String is_severe;
+    private String disabled_type;
+    private boolean is_severe;
 
     public MemberRequestDTO(String accountId, String memberPassword) {
         this.accountId = accountId;
@@ -19,7 +19,7 @@ public class MemberRequestDTO {
     }
 
     public MemberRequestDTO(String accountId, String memberPassword, String name, String gender, int age,
-                            String email, String call_info, String address, String intro, String disabled_type, String is_severe) {
+                            String email, String call_info, String address, String intro, String disabled_type, boolean is_severe) {
         this.accountId = accountId;
         this.password = memberPassword;
         this.name = name;
@@ -29,7 +29,7 @@ public class MemberRequestDTO {
         this.call_info = call_info;
         this.address = address;
         this.intro = intro;
-       // this.disabled_type = disabled_type;
+        this.disabled_type = disabled_type;
         this.is_severe = is_severe;
     }
 
@@ -70,8 +70,7 @@ public class MemberRequestDTO {
         return intro;
     }
 
-   /* public String getDisabled_id() {
-        return disabled_type;
-    }
-*/
+    public String getDisabled_id() {return disabled_type;}
+
+    public boolean isIs_severe() {return is_severe;}
 }

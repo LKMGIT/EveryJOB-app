@@ -1,20 +1,24 @@
 <?xml version ="1.0" encoding ="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="#FE7A36">
+    android:background="#00BCD4">
 
     <TextView
-        android:id="@+id/textView_login"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:text="에브리잡에서\n제공하는 광고입니다."
+        android:id="@+id/textView2"
+        android:layout_width="263dp"
+        android:layout_height="212dp"
+        android:text=" 에브리잡 접근성 테스터 \n 에브리잡 장애인\n 맞춤 QA 모집 \n 장소: 순천향대\n 멀티미디어 6층"
         android:textColor="@color/white"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="82dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
