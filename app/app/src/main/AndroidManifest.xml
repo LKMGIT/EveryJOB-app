@@ -36,6 +36,8 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".HomeActivity" />
+        <activity android:name=".RealCompanyActivity"
+            android:exported="false" />
         <activity android:name=".ProfileActivity" />
         <activity android:name="com.example.kakaomaptest.MapActivity" />
 

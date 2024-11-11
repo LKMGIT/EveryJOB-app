@@ -34,4 +34,7 @@ public interface ApiService {
 
     @GET("/mainpage")
     Call<List<RealtimeJobResponseDTO>> getMainPageData();
+
+    @GET("/live/detail/{id}")
+    Call<LocationDetailResponseDTO> getMainJobData(@Path("id") Long id);
 }

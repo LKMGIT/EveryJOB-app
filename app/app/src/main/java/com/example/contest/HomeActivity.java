@@ -114,28 +114,28 @@ public class HomeActivity extends AppCompatActivity {
     private void setupGridListeners() {
         // grid1 클릭 시 CompanyActivity로 이동
         grid1.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            Intent intent = new Intent(HomeActivity.this, RealCompanyActivity.class);
             intent.putExtra("id", grid1_id); // grid1_id 전달
             startActivity(intent);
         });
 
         // grid2 클릭 시 CompanyActivity로 이동
         grid2.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            Intent intent = new Intent(HomeActivity.this, RealCompanyActivity.class);
             intent.putExtra("id", grid2_id); // grid2_id 전달
             startActivity(intent);
         });
 
         // grid3 클릭 시 CompanyActivity로 이동
         grid3.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            Intent intent = new Intent(HomeActivity.this, RealCompanyActivity.class);
             intent.putExtra("id", grid3_id); // grid3_id 전달
             startActivity(intent);
         });
 
         // grid4 클릭 시 CompanyActivity로 이동
         grid4.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            Intent intent = new Intent(HomeActivity.this, RealCompanyActivity.class);
             intent.putExtra("id", grid4_id); // grid4_id 전달
             startActivity(intent);
         });
