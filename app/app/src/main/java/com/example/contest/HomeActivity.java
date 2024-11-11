@@ -34,6 +34,7 @@ public class HomeActivity extends AppCompatActivity {
     private CircleIndicator3 mIndicator;
     private Button btnMap, btnProfile;
     private ConstraintLayout grid1, grid2, grid3, grid4;
+    private Long grid1_id, grid2_id, grid3_id, grid4_id;
     private TextView grid1_name, grid2_name, grid3_name, grid4_name;
     private TextView grid1_pay_type, grid2_pay_type, grid3_pay_type, grid4_pay_type;
     private TextView grid1_pay, grid2_pay, grid3_pay, grid4_pay;
@@ -73,6 +74,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setupViewPager();
         setupButtonListeners();
+        setupGridListeners();
 
         // Call JobData method to fetch job data
         JobData();
@@ -109,12 +111,48 @@ public class HomeActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
     }
 
+    private void setupGridListeners() {
+        // grid1 클릭 시 CompanyActivity로 이동
+        grid1.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            intent.putExtra("id", grid1_id); // grid1_id 전달
+            startActivity(intent);
+        });
+
+        // grid2 클릭 시 CompanyActivity로 이동
+        grid2.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            intent.putExtra("id", grid2_id); // grid2_id 전달
+            startActivity(intent);
+        });
+
+        // grid3 클릭 시 CompanyActivity로 이동
+        grid3.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            intent.putExtra("id", grid3_id); // grid3_id 전달
+            startActivity(intent);
+        });
+
+        // grid4 클릭 시 CompanyActivity로 이동
+        grid4.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CompanyActivity.class);
+            intent.putExtra("id", grid4_id); // grid4_id 전달
+            startActivity(intent);
+        });
+    }
+
     private void JobData() {
         apiService.getMainPageData().enqueue(new Callback<List<RealtimeJobResponseDTO>>() {
             @Override
             public void onResponse(Call<List<RealtimeJobResponseDTO>> call, Response<List<RealtimeJobResponseDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<RealtimeJobResponseDTO> job = response.body();
+
+                    // 각 grid의 id를 저장
+                    grid1_id = job.get(0).getId();
+                    grid2_id = job.get(1).getId();
+                    grid3_id = job.get(2).getId();
+                    grid4_id = job.get(3).getId();
 
                     grid1_name.setText(job.get(0).getName());
                     grid1_pay_type.setText(job.get(0).getSalaryType());
